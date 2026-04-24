@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CouponGPTs – AI-verktyg Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --card: #1a1a26;
+      --accent: #00e5a0;
+      --accent2: #7b5ea7;
+      --accent3: #ff6b35;
+      --text: #f0f0f8;
+      --muted: #888899;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .nav-links { display: flex; gap: 2rem; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 10rem 3rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,229,160,0.12) 0%, transparent 70%);
+      top: -100px; right: -200px;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    .hero-glow2 {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,94,167,0.1) 0%, transparent 70%);
+      bottom: -100px; left: 100px;
+      animation: pulse 8s ease-in-out infinite reverse;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(0,229,160,0.1);
+      border: 1px solid rgba(0,229,160,0.3);
+      color: var(--accent);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.35rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      max-width: 800px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero-desc {
+      margin-top: 2rem;
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 500px;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .hero-btn {
+      margin-top: 2.5rem;
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 0.4rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+    .hero-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,229,160,0.35);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SCROLL INDICATOR */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem; left: 3rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      animation: fadeUp 1s 0.6s ease both;
+    }
+    .scroll-line {
+      width: 40px; height: 1px;
+      background: var(--muted);
+      display: inline-block;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 7rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+
+    p { color: var(--muted); max-width: 650px; }
+
+    /* ABOUT GRID */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .about-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .about-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,229,160,0.25);
+    }
+
+    .about-card .icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .about-card p { font-size: 0.9rem; }
+
+    /* HOW IT WORKS */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 2rem;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+    }
+
+    .step {
+      display: flex;
+      gap: 2rem;
+      padding: 2rem 0 2rem 5rem;
+      position: relative;
+    }
+
+    .step-num {
+      position: absolute;
+      left: 0;
+      width: 4rem; height: 4rem;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .step-content h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .step-content p { font-size: 0.95rem; max-width: 550px; }
+
+    /* AUDIENCE */
+    .audience-strip {
+      background: linear-gradient(135deg, var(--surface), var(--card));
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 4rem 3rem;
+      margin: 3rem 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .audience-item {
+      text-align: center;
+    }
+    .audience-item .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .audience-item h4 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    .audience-item p { font-size: 0.85rem; }
+
+    /* PRICING */
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .pricing-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2.5rem;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card.featured::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(0,229,160,0.07), transparent 60%);
+    }
+
+    .price-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .pricing-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+
+    .pricing-card .price {
+      font-size: 3rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 1rem 0;
+    }
+
+    .pricing-card .price span {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .feature-list li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ANALYSIS */
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .analysis-card {
+      border-radius: 1rem;
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .analysis-card.pros { background: rgba(0,229,160,0.04); border-color: rgba(0,229,160,0.2); }
+    .analysis-card.cons { background: rgba(255,107,53,0.04); border-color: rgba(255,107,53,0.2); }
+
+    .analysis-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+
+    .analysis-card.pros h3 { color: var(--accent); }
+    .analysis-card.cons h3 { color: var(--accent3); }
+
+    .analysis-list { list-style: none; }
+    .analysis-list li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+    }
+    .analysis-list li:last-child { border-bottom: none; }
+    .pros .analysis-list li::before { content: '+'; color: var(--accent); font-weight: 700; }
+    .cons .analysis-list li::before { content: '−'; color: var(--accent3); font-weight: 700; }
+
+    /* VERDICT */
+    .verdict {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 3.5rem;
+      margin-top: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verdict::before {
+      content: '"';
+      position: absolute;
+      top: -1rem; left: 2rem;
+      font-size: 12rem;
+      font-family: 'Syne', sans-serif;
+      color: rgba(0,229,160,0.06);
+      line-height: 1;
+    }
+
+    .verdict p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      max-width: 700px;
+      color: var(--text);
+    }
+
+    .verdict-author {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: none;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      section { padding: 5rem 1.5rem; }
+      .about-grid, .pricing-cards, .analysis-grid { grid-template-columns: 1fr; }
+      .audience-strip { grid-template-columns: 1fr; padding: 2rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">CouponGPTs</div>
+    <div class="nav-links">
+      <a href="#om">Om verktyget</a>
+      <a href="#hur">Hur det fungerar</a>
+      <a href="#pris">Pris</a>
+      <a href="#analys">Analys</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <span class="tag">AI-verktyg · Presentation</span>
+    <h1>Hitta <span>rabatter</span> med AI</h1>
+    <p class="hero-desc">CouponGPTs är ett AI-drivet verktyg som automatiskt söker upp de bästa kupongerna och erbjudandena på nätet – på några sekunder.</p>
+    <a href="https://www.coupongpts.com/" class="hero-btn" target="_blank">Besök CouponGPTs →</a>
+    <div class="scroll-hint">
+      <span class="scroll-line"></span>
+      Scrolla för att läsa mer
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- OM VERKTYGET -->
+  <section id="om">
+    <div class="section-label">01 — Om verktyget</div>
+    <h2>Vad är CouponGPTs?</h2>
+    <p>CouponGPTs är en AI-driven kupongsöktjänst som använder avancerad GPT-teknik (Generative Pre-trained Transformers) och Natural Language Processing (NLP) för att hjälpa användare att hitta rabattkoder och erbjudanden online. Istället för att manuellt söka på olika kupongsajter gör AI:n arbetet åt dig.</p>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="icon">🏢</div>
+        <h3>Skapare</h3>
+        <p>CouponGPTs drivs av ett dedikerat team bakom varumärket CouponGPTs. Tjänsten finns tillgänglig för USA, Storbritannien och Tyskland, och har stöd för tre länder med lokala erbjudanden.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">🎯</div>
+        <h3>Syfte & Nytta</h3>
+        <p>Syftet är att göra online-shopping billigare och enklare. Verktyget sparar tid genom att automatisera sökandet efter rabattkoder, fri frakt, cashback-erbjudanden och begränsade kampanjer.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">🌐</div>
+        <h3>Tekniken bakom</h3>
+        <p>Verktyget kombinerar AI-algoritmer, automatiserad web scraping och NLP för att kontinuerligt uppdatera sin databas med de senaste erbjudandena från butiker, sökmotorer och sociala medier.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">🔒</div>
+        <h3>Säkerhet & Integritet</h3>
+        <p>CouponGPTs följer GDPR och använder kryptering för att skydda användardata. Användare har kontroll över sin information och kan anpassa sina integritetsinställningar.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- HUR DET FUNGERAR -->
+  <section id="hur">
+    <div class="section-label">02 — Hur det fungerar</div>
+    <h2>Tre enkla steg</h2>
+    <p>Att använda CouponGPTs är intuitivt och kräver ingen registrering för att komma igång.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Skriv in ett sökord</h3>
+          <p>Ange namnet på butiken eller varumärket du vill handla hos – exempelvis "Nike", "Amazon" eller "Temu". AI:n tar hand om resten.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>AI söker igenom nätet</h3>
+          <p>Systemet genomsöker ett stort antal kupongsajter, sökmotorresultat och sociala medier för att samla ihop de bästa och mest aktuella erbjudandena. Det kan ta några sekunder, men resultaten presenteras i segment.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Kopiera och spara pengar</h3>
+          <p>Välj det erbjudande som passar dig bäst, kopiera rabattkoden och klistra in den vid kassan i din nätbutik. Klart! Om du inte hittar vad du söker kan du söka igen för att se fler resultat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MÅLGRUPP -->
+  <section id="malgrupp">
+    <div class="section-label">03 — Målgrupp</div>
+    <h2>Vem har nytta av det?</h2>
+    <p>CouponGPTs är designat för alla som handlar online, men passar särskilt väl för dessa grupper:</p>
+
+    <div class="audience-strip">
+      <div class="audience-item">
+        <div class="icon">🛒</div>
+        <h4>Frekvent onlineshoppare</h4>
+        <p>Den som handlar regelbundet på nätet och vill spara pengar utan att manuellt leta kupongkoder.</p>
+      </div>
+      <div class="audience-item">
+        <div class="icon">💰</div>
+        <h4>Budgetmedvetna konsumenter</h4>
+        <p>Den som aktivt försöker hålla nere sina utgifter och alltid söker bästa möjliga pris.</p>
+      </div>
+      <div class="audience-item">
+        <div class="icon">⏱️</div>
+        <h4>Tidspressade människor</h4>
+        <p>Den som inte har tid att söka igenom tiotals kupongsajter manuellt och vill ha snabba svar.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PRIS & BEGRÄNSNINGAR -->
+  <section id="pris">
+    <div class="section-label">04 — Pris & Begränsningar</div>
+    <h2>Kostnad & versioner</h2>
+    <p>CouponGPTs erbjuder en gratis basklass och planerar en premiumversion för mer avancerade användare.</p>
+
+    <div class="pricing-cards">
+      <div class="pricing-card featured">
+        <span class="price-badge">Tillgänglig nu</span>
+        <h3>Gratisversion</h3>
+        <div class="price">0 kr <span>/ mån</span></div>
+        <p style="font-size:0.9rem;">Gratis för alla användare. Inga tokens, inga kreditkort – direkt tillgång utan registrering.</p>
+        <ul class="feature-list">
+          <li>Standardsökning av kupongkoder</li>
+          <li>Stöd för populära butiker (Amazon, Nike, Temu m.fl.)</li>
+          <li>Tillgänglig i USA, UK och DE</li>
+          <li>Kontinuerlig databasuppdatering</li>
+          <li>Ingen registrering krävs</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <span class="price-badge" style="background: var(--accent2); color: white;">Planerad</span>
+        <h3>Premiumversion</h3>
+        <div class="price" style="color: var(--accent2);">TBA <span>/ mån</span></div>
+        <p style="font-size:0.9rem;">En premiumtjänst är under utveckling för de som vill ha mer avancerade funktioner.</p>
+        <ul class="feature-list">
+          <li>Avancerade sökfilter</li>
+          <li>Exklusiva erbjudanden</li>
+          <li>Tidig tillgång till realisationer</li>
+          <li>Personanpassade rekommendationer</li>
+          <li>Prioriterad support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.2); border-radius: 0.75rem;">
+      <p style="color: var(--text); font-size: 0.9rem;"><strong style="color: var(--accent3);">⚠️ Begränsningar att notera:</strong> Tillgängligheten av specifika kupongkoder varierar beroende på butik och region. Tjänsten täcker för tillfället endast USA, UK och DE – inte Sverige. Man kan behöva söka flera gånger för att hitta de bästa koder. Kupongernas giltighet garanteras inte till 100%.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ANALYS & UTVÄRDERING -->
+  <section id="analys">
+    <div class="section-label">05 — Analys & Utvärdering</div>
+    <h2>Vad är nyttan?</h2>
+    <p>CouponGPTs löser ett verkligt problem – att hitta giltiga rabattkoder är tidskrävande och frustrerande. Här är en objektiv bedömning:</p>
+
+    <div class="analysis-grid">
+      <div class="analysis-card pros">
+        <h3>Fördelar</h3>
+        <ul class="analysis-list">
+          <li>Helt gratis att använda, ingen registrering</li>
+          <li>Sparar tid jämfört med manuell sökning</li>
+          <li>AI-driven personanpassning</li>
+          <li>Bred täckning av populära butiker</li>
+          <li>Kontinuerlig uppdatering av databas</li>
+          <li>Erbjuder fler dealtyper än bara rabattkoder</li>
+        </ul>
+      </div>
+      <div class="analysis-card cons">
+        <h3>Nackdelar</h3>
+        <ul class="analysis-list">
+          <li>Täcker ej Sverige (bara US, UK, DE)</li>
+          <li>Kräver ibland flera sökningar</li>
+          <li>Kupongernas giltighet inte 100% garanterad</li>
+          <li>Premiumfunktioner ej tillgängliga ännu</li>
+          <li>Inga mobilappar (webbläsarbaserat)</li>
+          <li>Okänt vem som faktiskt äger tjänsten</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <p>CouponGPTs är ett enkelt och lättillgängligt AI-verktyg som gör det enklare att spara pengar vid onlineshopping. Styrkan ligger i att det är gratis, snabbt och kräver noll registrering. Svagheten är att det inte täcker svenska butiker och att man ibland behöver söka flera gånger. För en amerikan som handlar på Amazon eller Nike är det ett utmärkt verktyg. För en svensk shoppare är nyttan mer begränsad – i dagsläget.</p>
+      <p class="verdict-author">— Sammanfattande bedömning · AI-verktyg ARTART01</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">CouponGPTs</div>
+    <p>Presentation skapad för kursen Artificiell intelligens · ARTART01</p>
+    <p>Besök: <a href="https://www.coupongpts.com/" target="_blank">coupongpts.com</a></p>
+  </footer>
+
+</body>
+</html>
